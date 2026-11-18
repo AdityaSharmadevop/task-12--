@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Knowledge Quiz</title>
+    <!-- Load Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter Font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        // Configure Tailwind to use Inter as the default sans-serif font
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex items-center justify-center p-4 sm:p-6 antialiased selection:bg-indigo-100 selection:text-indigo-800">
+
+    <!-- Main Quiz Card Container -->
+    <main class="w-full max-w-2xl bg-white rounded-3xl shadow-xl shadow-slate-200/70 border border-slate-100 overflow-hidden transition-all duration-300">
+
+        <!-- ========================================== -->
+        <!-- 1. START SCREEN                            -->
+        <!-- ========================================== -->
+        <section id="start-screen" class="p-8 sm:p-12 text-center">
+            <!-- Decorative Icon Badge -->
+            <div class="w-16 h-16 mx-auto mb-6 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">
+                General Knowledge Quiz
+            </h1>
+            <p class="text-slate-500 text-base sm:text-lg max-w-md mx-auto mb-8 leading-relaxed">
+                Test your wits across science, history, geography, and world culture with 10 quick multiple-choice questions.
+            </p>
+
+            <!-- Quiz Quick Info Pills -->
+            <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-9">
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3">
+                    <p class="text-xl font-bold text-indigo-600">10</p>
+                    <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mt-0.5">Questions</p>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3">
+                    <p class="text-xl font-bold text-indigo-600">4</p>
+                    <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mt-0.5">Options</p>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3">
+                    <p class="text-xl font-bold text-indigo-600">Instant</p>
+                    <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mt-0.5">Feedback</p>
+                </div>
+            </div>
+
+            <!-- Start Button -->
+            <button id="start-btn" type="button" class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-semibold text-base rounded-2xl shadow-lg shadow-indigo-200 transition-all duration-200 inline-flex items-center justify-center gap-2 cursor-pointer">
+                <span>Start Quiz</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </button>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 2. QUIZ SCREEN                             -->
+        <!-- ========================================== -->
+        <section id="quiz-screen" class="hidden">
+            <!-- Top Bar: Counter, Score & Progress Bar -->
+            <div class="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 border-b border-slate-100 bg-slate-50/50">
+                <div class="flex items-center justify-between gap-4 mb-3">
+                    <span id="question-counter" class="text-sm font-semibold text-slate-600">
+                        Question 1 of 10
+                    </span>
+                    <span id="live-score" class="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full">
+                        Score: 0
+                    </span>
+                </div>
+
+                <!-- Progress Bar Track -->
+                <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-indigo-600 rounded-full transition-all duration-500 ease-out" style="width: 10%;"></div>
+                </div>
+            </div>
+
+            <!-- Question & Options Area -->
+            <div class="p-6 sm:p-8">
+                <!-- Category Pill -->
+                <div class="mb-3">
+                    <span id="question-category" class="inline-block px-3 py-1 bg-slate-100 text-slate-600 text-xs font-semibold uppercase tracking-wider rounded-full">
+                        Category
+                    </span>
+                </div>
+
+                <!-- Question Heading -->
+                <h2 id="question-text" class="text-xl sm:text-2xl font-bold text-slate-900 leading-snug mb-6">
+                    Loading question...
+                </h2>
+
+                <!-- Clickable Options List -->
+                <div id="options-container" class="space-y-3" role="radiogroup" aria-label="Answer options">
+                    <!-- Option buttons are dynamically injected here by JavaScript -->
+                </div>
+
+                <!-- Feedback & Next Button Footer -->
+                <div class="mt-8 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 min-h-[64px]">
+                    <div id="feedback-message" class="text-sm font-semibold flex items-center gap-2 opacity-0 transition-opacity duration-200">
+                        <!-- Feedback text injected here -->
+                    </div>
+
+                    <button id="next-btn" type="button" class="hidden w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-200 transition-all duration-200 inline-flex items-center justify-center gap-2 cursor-pointer">
+                        <span id="next-btn-text">Next Question</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 3. FINAL RESULTS SCREEN                    -->
+        <!-- ========================================== -->
+        <section id="results-screen" class="hidden p-8 sm:p-12 text-center">
+            <!-- Result Icon Badge -->
+            <div id="result-icon-container" class="w-20 h-20 mx-auto mb-6 bg-emerald-50 text-emerald-600 rounded-3xl flex items-center justify-center shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+            </div>
+
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Quiz Completed!</h2>
+            <p id="performance-message" class="text-slate-600 text-base sm:text-lg max-w-md mx-auto mb-8">
+                Great effort!
+            </p>
+
+            <!-- Score Summary Card -->
+            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 max-w-sm mx-auto mb-8">
+                <div class="grid grid-cols-2 divide-x divide-slate-200 mb-5">
+                    <div class="px-4">
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Score</p>
+                        <p id="final-score" class="text-3xl font-extrabold text-slate-900">0 / 10</p>
+                    </div>
+                    <div class="px-4">
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Percentage</p>
+                        <p id="final-percentage" class="text-3xl font-extrabold text-indigo-600">0%</p>
+                    </div>
+                </div>
+
+                <!-- Visual Accuracy Bar -->
+                <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+                    <div id="result-progress-bar" class="h-full bg-indigo-600 rounded-full transition-all duration-700 ease-out" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <!-- Restart Quiz Button -->
+            <button id="restart-btn" type="button" class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-semibold text-base rounded-2xl shadow-lg shadow-indigo-200 transition-all duration-200 inline-flex items-center justify-center gap-2 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Restart Quiz</span>
+            </button>
+        </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC                           -->
+    <!-- ========================================== -->
+    <script>
+        /**
+         * Quiz Data: 10 Engaging General Knowledge Questions
+         * Each object contains a category, the question prompt, 4 options, and the zero-based index of the correct answer.
+         */
+        const quizData = [
+            {
+                category: "Geography",
+                question: "What is the capital city of Australia?",
+                options: ["Sydney", "Melbourne", "Canberra", "Perth"],
+                correctIndex: 2
+            },
+            {
+                category: "Astronomy",
+                question: "Which planet in our solar system is famously known as the 'Red Planet'?",
+                options: ["Venus", "Mars", "Jupiter", "Saturn"],
+                correctIndex: 1
+            },
+            {
+                category: "History",
+                question: "In which year did the RMS Titanic sink on its maiden voyage?",
+                options: ["1905", "1912", "1918", "1923"],
+                correctIndex: 1
+            },
+            {
+                category: "Art & Culture",
+                question: "Who painted the iconic masterpiece 'The Starry Night'?",
+                options: ["Pablo Picasso", "Claude Monet", "Vincent van Gogh", "Leonardo da Vinci"],
+                correctIndex: 2
+            },
+            {
+                category: "Chemistry",
+                question: "What is the chemical symbol for the element Gold?",
+                options: ["Gd", "Go", "Ag", "Au"],
+                correctIndex: 3
+            },
+            {
+                category: "Geography",
+                question: "Which is the largest ocean on Earth?",
+                options: ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"],
+                correctIndex: 2
+            },
+            {
+                category: "Biology",
+                question: "How many hearts does an octopus have?",
+                options: ["1", "2", "3", "4"],
+                correctIndex: 2
+            },
+            {
+                category: "Technology",
+                question: "What does 'HTTP' stand for in web addresses?",
+                options: [
+                    "HyperText Transfer Protocol",
+                    "High Transmission Text Program",
+                    "Hyperlink Text Tracking Process",
+                    "Host Transfer Terminal Protocol"
+                ],
+                correctIndex: 0
+            },
+            {
+                category: "World Heritage",
+                question: "Which country is home to the ancient rose-red city of Petra?",
+                options: ["Egypt", "Jordan", "Morocco", "Greece"],
+                correctIndex: 1
+            },
+            {
+                category: "Space",
+                question: "What is the closest star to Earth?",
+                options: ["Proxima Centauri", "Sirius", "The Sun", "Alpha Centauri"],
+                correctIndex: 2
+            }
+        ];
+
+        // Application State
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        // Option labels for clean visual indexing
+        const optionLetters = ["A", "B", "C", "D"];
+
+        // Reusable SVG Icons for immediate visual feedback
+        const checkIconSVG = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>`;
+
+        const crossIconSVG = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>`;
+
+        /**
+         * Initialize the quiz application once the DOM is fully loaded.
+         */
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                // Cache DOM Elements
+                const startScreen = document.getElementById("start-screen");
+                const quizScreen = document.getElementById("quiz-screen");
+                const resultsScreen = document.getElementById("results-screen");
+
+                const startBtn = document.getElementById("start-btn");
+                const nextBtn = document.getElementById("next-btn");
+                const nextBtnText = document.getElementById("next-btn-text");
+                const restartBtn = document.getElementById("restart-btn");
+
+                const questionCounter = document.getElementById("question-counter");
+                const liveScore = document.getElementById("live-score");
+                const progressBar = document.getElementById("progress-bar");
+                const questionCategory = document.getElementById("question-category");
+                const questionText = document.getElementById("question-text");
+                const optionsContainer = document.getElementById("options-container");
+                const feedbackMessage = document.getElementById("feedback-message");
+
+                const finalScoreEl = document.getElementById("final-score");
+                const finalPercentageEl = document.getElementById("final-percentage");
+                const performanceMessageEl = document.getElementById("performance-message");
+                const resultProgressBar = document.getElementById("result-progress-bar");
+                const resultIconContainer = document.getElementById("result-icon-container");
+
+                /**
+                 * Transitions from the start screen to the active quiz view.
+                 */
+                function startQuiz() {
+                    currentQuestionIndex = 0;
+                    score = 0;
+                    isAnswered = false;
+
+                    startScreen.classList.add("hidden");
+                    resultsScreen.classList.add("hidden");
+                    quizScreen.classList.remove("hidden");
+
+                    liveScore.textContent = `Score: ${score}`;
+                    loadQuestion();
+                }
+
+                /**
+                 * Renders the current question, updates the progress bar, and generates option buttons.
+                 */
+                function loadQuestion() {
+                    isAnswered = false;
+                    const currentData = quizData[currentQuestionIndex];
+                    const totalQuestions = quizData.length;
+
+                    // Update header metadata and progress bar
+                    questionCounter.textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+                    const progressPercent = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+                    progressBar.style.width = `${progressPercent}%`;
+
+                    // Update category and question text
+                    questionCategory.textContent = currentData.category;
+                    questionText.textContent = currentData.question;
+
+                    // Reset feedback and Next button state
+                    feedbackMessage.classList.add("opacity-0");
+                    feedbackMessage.innerHTML = "";
+                    nextBtn.classList.add("hidden");
+                    nextBtnText.textContent = (currentQuestionIndex === totalQuestions - 1)
+                        ? "See Results"
+                        : "Next Question";
+
+                    // Clear previous options and create new buttons
+                    optionsContainer.innerHTML = "";
+
+                    currentData.options.forEach((optionText, index) => {
+                        const button = document.createElement("button");
+                        button.type = "button";
+                        button.dataset.index = index;
+                        button.className = [
+                            "option-btn",
+                            "w-full",
+                            "text-left",
+                            "p-4",
+                            "rounded-2xl",
+                            "border-2",
+                            "border-slate-200",
+                            "bg-white",
+                            "hover:border-indigo-400",
+                            "hover:bg-indigo-50/40",
+                            "transition-all",
+                            "duration-200",
+                            "flex",
+                            "items-center",
+                            "justify-between",
+                            "gap-3",
+                            "cursor-pointer",
+                            "group"
+                        ].join(" ");
+
+                        button.innerHTML = `
+                            <div class="flex items-center gap-3.5">
+                                <span class="option-badge w-8 h-8 rounded-xl bg-slate-100 text-slate-600 font-bold text-sm flex items-center justify-center shrink-0 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors">
+                                    ${optionLetters[index]}
+                                </span>
+                                <span class="font-medium text-slate-800 text-base">${optionText}</span>
+                            </div>
+                            <span class="status-icon"></span>
+                        `;
+
+                        button.addEventListener("click", () => handleOptionSelect(index, button));
+                        optionsContainer.appendChild(button);
+                    });
+                }
+
+                /**
+                 * Handles user selection of an answer option.
+                 * Applies green/red feedback, updates score, disables all options, and reveals the Next button.
+                 * @param {number} selectedIndex - The index of the clicked option.
+                 * @param {HTMLButtonElement} selectedButton - The clicked button element.
+                 */
+                function handleOptionSelect(selectedIndex, selectedButton) {
+                    // Prevent multiple selections on the same question
+                    if (isAnswered) return;
+                    isAnswered = true;
+
+                    const currentData = quizData[currentQuestionIndex];
+                    const correctIndex = currentData.correctIndex;
+                    const allOptionButtons = optionsContainer.querySelectorAll(".option-btn");
+
+                    // Disable all option buttons and remove hover styling
+                    allOptionButtons.forEach((btn) => {
+                        btn.disabled = true;
+                        btn.classList.remove("hover:border-indigo-400", "hover:bg-indigo-50/40", "cursor-pointer");
+                        btn.classList.add("cursor-default");
+                    });
+
+                    const isCorrect = selectedIndex === correctIndex;
+
+                    if (isCorrect) {
+                        // Increment score and update display
+                        score++;
+                        liveScore.textContent = `Score: ${score}`;
+
+                        // Style selected button as Correct (Green)
+                        applyCorrectStyle(selectedButton);
+
+                        // Show positive feedback
+                        feedbackMessage.innerHTML = `${checkIconSVG}<span class="text-emerald-700">Correct! Well done.</span>`;
+                    } else {
+                        // Style selected button as Incorrect (Red)
+                        applyIncorrectStyle(selectedButton);
+
+                        // Also highlight the correct answer in Green so the user learns
+                        const correctButton = allOptionButtons[correctIndex];
+                        if (correctButton) {
+                            applyCorrectStyle(correctButton);
+                        }
+
+                        // Show corrective feedback
+                        feedbackMessage.innerHTML = `${crossIconSVG}<span class="text-rose-700">Incorrect! The correct answer is highlighted.</span>`;
+                    }
+
+                    // Dim unselected, non-correct options for visual clarity
+                    allOptionButtons.forEach((btn, idx) => {
+                        if (idx !== selectedIndex && idx !== correctIndex) {
+                            btn.classList.add("opacity-50");
+                        }
+                    });
+
+                    // Reveal feedback message and Next Question button
+                    feedbackMessage.classList.remove("opacity-0");
+                    nextBtn.classList.remove("hidden");
+                }
+
+                /**
+                 * Applies green "correct" styling to a given option button.
+                 * @param {HTMLButtonElement} button
+                 */
+                function applyCorrectStyle(button) {
+                    button.classList.remove("border-slate-200", "bg-white");
+                    button.classList.add("border-emerald-500", "bg-emerald-50");
+
+                    const badge = button.querySelector(".option-badge");
+                    if (badge) {
+                        badge.classList.remove("bg-slate-100", "text-slate-600", "group-hover:bg-indigo-100", "group-hover:text-indigo-700");
+                        badge.classList.add("bg-emerald-500", "text-white");
+                    }
+
+                    const statusIcon = button.querySelector(".status-icon");
+                    if (statusIcon) {
+                        statusIcon.innerHTML = checkIconSVG;
+                    }
+                }
+
+                /**
+                 * Applies red "incorrect" styling to a given option button.
+                 * @param {HTMLButtonElement} button
+                 */
+                function applyIncorrectStyle(button) {
+                    button.classList.remove("border-slate-200", "bg-white");
+                    button.classList.add("border-rose-500", "bg-rose-50");
+
+                    const badge = button.querySelector(".option-badge");
+                    if (badge) {
+                        badge.classList.remove("bg-slate-100", "text-slate-600", "group-hover:bg-indigo-100", "group-hover:text-indigo-700");
+                        badge.classList.add("bg-rose-500", "text-white");
+                    }
+
+                    const statusIcon = button.querySelector(".status-icon");
+                    if (statusIcon) {
+                        statusIcon.innerHTML = crossIconSVG;
+                    }
+                }
+
+                /**
+                 * Advances to the next question or displays the results screen if finished.
+                 */
+                function handleNextQuestion() {
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < quizData.length) {
+                        loadQuestion();
+                    } else {
+                        showResults();
+                    }
+                }
+
+                /**
+                 * Displays the final results screen with total score, percentage, and tailored performance message.
+                 */
+                function showResults() {
+                    quizScreen.classList.add("hidden");
+                    resultsScreen.classList.remove("hidden");
+
+                    const totalQuestions = quizData.length;
+                    const percentage = Math.round((score / totalQuestions) * 100);
+
+                    finalScoreEl.textContent = `${score} / ${totalQuestions}`;
+                    finalPercentageEl.textContent = `${percentage}%`;
+
+                    // Determine tailored performance message and badge color based on percentage
+                    let message = "";
+                    resultIconContainer.className = "w-20 h-20 mx-auto mb-6 rounded-3xl flex items-center justify-center shadow-sm";
+                    resultProgressBar.className = "h-full rounded-full transition-all duration-700 ease-out";
+
+                    if (percentage >= 90) {
+                        message = "Outstanding! You have an impressive command of general knowledge.";
+                        resultIconContainer.classList.add("bg-emerald-50", "text-emerald-600");
+                        resultProgressBar.classList.add("bg-emerald-500");
+                    } else if (percentage >= 70) {
+                        message = "Great job! You know your stuff and scored really well.";
+                        resultIconContainer.classList.add("bg-indigo-50", "text-indigo-600");
+                        resultProgressBar.classList.add("bg-indigo-600");
+                    } else if (percentage >= 50) {
+                        message = "Not bad! A solid effort with a few tricky questions along the way.";
+                        resultIconContainer.classList.add("bg-amber-50", "text-amber-600");
+                        resultProgressBar.classList.add("bg-amber-500");
+                    } else {
+                        message = "Keep practicing! Every quiz is a great chance to learn something new.";
+                        resultIconContainer.classList.add("bg-rose-50", "text-rose-600");
+                        resultProgressBar.classList.add("bg-rose-500");
+                    }
+
+                    performanceMessageEl.textContent = message;
+
+                    // Trigger smooth progress bar animation after screen becomes visible
+                    resultProgressBar.style.width = "0%";
+                    requestAnimationFrame(() => {
+                        setTimeout(() => {
+                            resultProgressBar.style.width = `${percentage}%`;
+                        }, 100);
+                    });
+                }
+
+                // Attach Event Listeners
+                startBtn.addEventListener("click", startQuiz);
+                nextBtn.addEventListener("click", handleNextQuestion);
+                restartBtn.addEventListener("click", startQuiz);
+
+            } catch (error) {
+                console.error("An error occurred while initializing the quiz:", error);
+            }
+        });
+    </script>
+</body>
+</html>
